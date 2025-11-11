@@ -1,0 +1,78 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "idle",
+			"loop": false,
+			"name": "idle sword"
+		},
+		{
+			"offsets": [
+				66,
+				153
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singLEFT",
+			"loop": false,
+			"name": "Slash left"
+		},
+		{
+			"offsets": [
+				177,
+				-8
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singDOWN",
+			"loop": false,
+			"name": "Slash down"
+		},
+		{
+			"offsets": [
+				60,
+				157
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singRIGHT",
+			"loop": false,
+			"name": "Slash Right"
+		},
+		{
+			"offsets": [
+				-17,
+				452
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singUP",
+			"loop": false,
+			"name": "Slash Up"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/Bf Shovel",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "bf",
+	"flip_x": true,
+	"healthbar_colors": [
+		110,
+		193,
+		221
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"sing_duration": 5.3,
+	"scale": 1
+}

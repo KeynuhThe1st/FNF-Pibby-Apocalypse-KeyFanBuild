@@ -1,0 +1,122 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				160,
+				-74
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singDOWN-alt",
+			"loop": false,
+			"name": "Pea shotDown"
+		},
+		{
+			"offsets": [
+				436,
+				149
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singLEFT-alt",
+			"loop": false,
+			"name": "Pea shotLeft"
+		},
+		{
+			"offsets": [
+				253,
+				249
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singUP-alt",
+			"loop": false,
+			"name": "Pea shotUp"
+		},
+		{
+			"offsets": [
+				63,
+				171
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singRIGHT-alt",
+			"loop": false,
+			"name": "Pea shotRight"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "idle",
+			"loop": true,
+			"name": "Pea Idle"
+		},
+		{
+			"offsets": [
+				557,
+				150
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singLEFT",
+			"loop": false,
+			"name": "Pea Left"
+		},
+		{
+			"offsets": [
+				174,
+				-51
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singDOWN",
+			"loop": false,
+			"name": "Pea Down"
+		},
+		{
+			"offsets": [
+				148,
+				402
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singUP",
+			"loop": false,
+			"name": "Pea Up"
+		},
+		{
+			"offsets": [
+				70,
+				172
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singRIGHT",
+			"loop": false,
+			"name": "Pea Right"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/Sam_gatling",
+	"position": [
+		-10,
+		-15
+	],
+	"healthicon": "sam",
+	"flip_x": false,
+	"healthbar_colors": [
+		156,
+		224,
+		48
+	],
+	"camera_position": [
+		-40,
+		-110
+	],
+	"sing_duration": 5.1,
+	"scale": 1
+}

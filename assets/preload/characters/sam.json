@@ -1,0 +1,89 @@
+{
+	"animations": [
+		{
+			"loop": true,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "idle",
+			"fps": 24,
+			"name": "Pea Idle",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				355,
+				76
+			],
+			"anim": "singLEFT",
+			"fps": 24,
+			"name": "Pea Left",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				194,
+				-31
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "Pea Down",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				248,
+				643
+			],
+			"anim": "singUP",
+			"fps": 24,
+			"name": "Pea Up",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				40,
+				-20
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "Pea Right",
+			"indices": []
+		},
+		{
+			"offsets": [
+				43,
+				567
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "GT",
+			"indices": [],
+			"name": "Gatling Transformation"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/Sam",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "sam",
+	"flip_x": false,
+	"healthbar_colors": [
+		156,
+		224,
+		48
+	],
+	"camera_position": [
+		-180,
+		-400
+	],
+	"sing_duration": 4.8,
+	"scale": 1
+}
