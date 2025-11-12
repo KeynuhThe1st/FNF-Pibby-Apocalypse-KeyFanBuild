@@ -5264,6 +5264,7 @@ class PlayState extends MusicBeatState
 								playerStrums.members[i].alpha = 0;
 							}
 						case 128:
+							defaultCamZoom = 0.8;
 							camHUD.alpha = 1;
 							if (ClientPrefs.flashing) {
 								camOther.flash(FlxColor.WHITE, 1);
