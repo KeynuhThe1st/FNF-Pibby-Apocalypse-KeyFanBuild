@@ -5051,7 +5051,6 @@ class PlayState extends MusicBeatState
 						case 432: lyricTxt.text = "DIEEEEEEEEEEEEEE!!!!!";
 						case 448:
 							lyricTxt.text = "";
-							ClientPrefs.killyourself = true;
 						case 704:
 							songSpeed = 0.5;
 							lyricTxt.text = "WHY!?!?!?!?!?";
