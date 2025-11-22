@@ -51,7 +51,8 @@ class MainMenuState extends MusicBeatState
 	
 	var optionShit:Array<String> = [
 		'FREEPLAY',
-		'CREDITS'
+		'CREDITS',
+		'SUBMIT A SONG'
 	];
 
 	var magenta:FlxSprite;
@@ -175,20 +176,20 @@ class MainMenuState extends MusicBeatState
 		add(discord);
 
 		FlxMouseEvent.add(discord,
-			function(s : FlxSprite) { Lib.getURL(new URLRequest('https://discord.gg/fUUn63nXjZ')); },
+			function(s : FlxSprite) { Lib.getURL(new URLRequest('https://discord.gg/dtnpa')); },
 			null,
 			function( s : FlxSprite ) { FlxTween.tween(discord, {alpha: 1}, 0.25, { ease: FlxEase.quadOut}); },
 			function( s : FlxSprite ) { FlxTween.tween(discord, {alpha: 0.4}, 0.25, { ease: FlxEase.quadOut}); }
 		);
 
 
-		aweTxt = new FlxText(0, FlxG.height - 35, 0, 'Now Playing: Menu Theme ${Main.funnyMenuMusic == 2 ? '(Alt)' : ''} - By ${Main.funnyMenuMusic == 2 ? 'Sodukoru' : 'AstroBabyOfficial'} ♪', 8);
+		aweTxt = new FlxText(0, FlxG.height - 35, 0, 'Now Playing: Menu Theme ${Main.funnyMenuMusic == 2 ? '(Alt)' : ''} - By ${Main.funnyMenuMusic == 2 ? 'Sodukoru' : 'AstroBabyOffical'} ♪', 8);
 		aweTxt.setFormat(Paths.font("menuBUTTONS.ttf"), 24, FlxColor.WHITE, LEFT);
 		aweTxt.alpha = 1;
 		aweTxt.antialiasing = ClientPrefs.globalAntialiasing;
 		add(aweTxt);
 
-        verTxt = new FlxText(0, FlxG.height - 65, 0, 'PIBBY APOCALYPSE DEMO: KeyFanBuild - V2.0', 8);
+        verTxt = new FlxText(0, FlxG.height - 65, 0, 'PIBBY APOCALYPSE DEMO - KeyFanBuild 2.0', 8);
 		verTxt.setFormat(Paths.font("menuBUTTONS.ttf"), 24, FlxColor.WHITE, LEFT);
 		verTxt.alpha = 1;
 		verTxt.antialiasing = ClientPrefs.globalAntialiasing;
@@ -211,6 +212,10 @@ class MainMenuState extends MusicBeatState
 				case 'FREEPLAY':
 					menuItem.y = -75;
 					menuItem.x = 170;
+					
+				case 'SUBMIT A SONG':
+					menuItem.x = 485;
+					menuItem.y = -75;
 			}
 			menuItems.add(menuItem);
 			var scr:Float = (optionShit.length - 4) * 0.135;
@@ -220,53 +225,6 @@ class MainMenuState extends MusicBeatState
 			//menuItem.setGraphicSize(Std.int(menuItem.width * 0.58));
 			menuItem.updateHitbox();
 			menuItem.x -= 125;
-
-			// Add mouse click and hover handling so clicking items activates them like pressing Accept
-			var m = menuItem;
-			FlxMouseEvent.add(m,
-				function(s:FlxSprite) {
-					if (selectedSomethin) return;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					curSelected = m.ID;
-					changeItem(0);
-					selectedSomethin = true;
-					menuItems.forEach(function(spr:FlxSprite)
-					{
-						if (curSelected != spr.ID)
-						{
-							FlxTween.tween(spr, {alpha:0},0.4, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
-								{
-									spr.kill();
-								}
-							});
-						}
-						else
-						{
-							FlxFlicker.flicker(spr,1,0.06, false, false, function(flick:FlxFlicker)
-							{
-								var daChoice:String = optionShit[curSelected];
-
-								switch (daChoice)
-								{
-									case 'STORY MODE':
-										MusicBeatState.switchState(new StoryMenuState());
-									case 'FREEPLAY':
-										MusicBeatState.switchState(new FreeplayState());
-										FlxG.sound.playMusic(Paths.music('fpmenu'));
-									case 'CREDITS':
-										LoadingState.loadAndSwitchState(new PACreditsState());
-										FlxG.sound.playMusic(Paths.music('creditsmenu'));
-								}
-							});
-						}
-					});
-				},
-				null,
-				function( s : FlxSprite ) { FlxTween.tween(m, {alpha:1},0.25, { ease: FlxEase.quadOut}); },
-				function( s : FlxSprite ) { FlxTween.tween(m, {alpha:0.4},0.25, { ease: FlxEase.quadOut}); }
-				);
 		}
 
 		// NG.core.calls.event.logEvent('swag').send();
@@ -377,6 +335,9 @@ class MainMenuState extends MusicBeatState
 									//credits aint done i just did this to make testing easier
 									LoadingState.loadAndSwitchState(new PACreditsState());
 									FlxG.sound.playMusic(Paths.music('creditsmenu'));
+								case 'SUBMIT A SONG':
+									Lib.getURL(new URLRequest('https://forms.gle/ZrUg9pyGVBsJZZg78'));
+									selectedSomethin = false;
 
                                     //Lib.getURL(new URLRequest('https://gamebanana.com/wips/73842'));
                                     //MusicBeatState.switchState(this);

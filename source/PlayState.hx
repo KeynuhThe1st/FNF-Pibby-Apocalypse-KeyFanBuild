@@ -1480,18 +1480,24 @@ class PlayState extends MusicBeatState
 						GameOverSubstate.endSoundName = 'gffinnrevive';
                     }
 				case 'Fallen Hero':
+					addCharacterToList('fhbf-white', 1);
+					addCharacterToList('fhfinn-white', 1);
 					healthDrain = true;
 					timeTxt.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxt.setFormat(Paths.font('finn.ttf'), 20, boyfriendColor, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					lyricTxt.setFormat(Paths.font('finn.ttf'), 48, dadColor, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					FlxTween.tween(lyricTxt, {alpha: 1}, 0.5, {
-						ease: FlxEase.linear,
-						onComplete:
-						function (twn:FlxTween)
-							{
-								lyricTxt.alpha = 1;
-							}
-					});
+					camGame.fade(FlxColor.BLACK, 0.000001);
+					camHUD.alpha = 0;
+					healthBar.alpha = 0;
+					healthBarBG.alpha = 0;
+					pibbyHealthbar.alpha = 0;
+					iconP1.alpha = 0; 
+					iconP2.alpha = 0;
+					iconP3.alpha = 0;
+					scoreTxt.alpha = 0;
+					finnBarThing.alpha = 0.0001;
+					// twin I tried to making the fucking strums and timebar disappear but they kept reapparing idk why tf :broken_heart: 
+					// tbh i think its the stage doing it but i will look into it later idk
 
 					if (ClientPrefs.gore) {
 					    GameOverSubstate.characterName = 'bf-dead-finn';
@@ -4594,6 +4600,8 @@ class PlayState extends MusicBeatState
 								health -= 0.035;
 							case "Come Along With Me":
 								health -= 0.0225;
+							case "Fallen Hero":
+								health -= 0.04;
 						}
                     }
                 }
@@ -5031,11 +5039,52 @@ class PlayState extends MusicBeatState
 				case 'Fallen Hero':
 					switch (curStep)
 					{
-						case 0:
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
+						case 1: 
+						if (ClientPrefs.flashing) camOther.flash(FlxColor.WHITE, 1);
+						triggerEventNote('Add Camera Zoom', ' ', ' ');
+						case 32: if (ClientPrefs.flashing) camOther.flash(FlxColor.WHITE, 1);
+						triggerEventNote('Add Camera Zoom', ' ', ' ');
+						case 64: if (ClientPrefs.flashing) camOther.flash(FlxColor.WHITE, 1);
+						triggerEventNote('Add Camera Zoom', ' ', ' ');
+						case 128: if (ClientPrefs.flashing) camOther.flash(FlxColor.WHITE, 1);
+						triggerEventNote('Add Camera Zoom', ' ', ' ');
+						case 160: if (ClientPrefs.flashing) camOther.flash(FlxColor.WHITE, 1);
+						triggerEventNote('Add Camera Zoom', ' ', ' ');
+						case 189: 
+							FlxTween.tween(scoreTxt, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(camGame, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut, onComplete: function(twn:FlxTween) {
+								camGame.alpha = 1;
+								camGame.fade(FlxColor.BLACK, 0.000001, true);
+							}});
+							FlxTween.tween(iconP1, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(iconP2, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							if (gf != null) FlxTween.tween(iconP3, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(healthBar, {alpha: ClientPrefs.healthBarAlpha}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(healthBarBG, {alpha: ClientPrefs.healthBarAlpha}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(pibbyHealthbar, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(finnBarThing, {alpha: ClientPrefs.healthBarAlpha}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(timeBar, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(timeBarBG, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(timeTxt, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							playerStrums.forEach(function(strum:StrumNote)
+							{
+								FlxTween.tween(strum, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							});
+							opponentStrums.forEach(function(strum:StrumNote)
+							{
+								FlxTween.tween(strum, {alpha: 1}, 0.8, {
+									ease: FlxEase.quadInOut,
+									onComplete: function(twn:FlxTween)
+									{
+										if(ClientPrefs.middleScroll && !ClientPrefs.opponentStrums)
+											strum.alpha = 0.35;
+									}
+								});
+							});
+							FlxTween.tween(lyricTxt, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
+							FlxTween.tween(camHUD, {alpha: 1}, 0.8, {ease: FlxEase.quadInOut});
 						case 192: lyricTxt.text = "HAHAHAHAHAHAHA";
 						case 200: lyricTxt.text = "*inhales*";
-						case 203: lyricTxt.text = "HAHAHAHAHAHAHA";
 						case 214: lyricTxt.text = "*inhales*";
 						case 220: lyricTxt.text = "HAHAHAHAHAHAHA";
 						case 228: lyricTxt.text = "*inhales*";
@@ -5047,33 +5096,35 @@ class PlayState extends MusicBeatState
 						case 295: lyricTxt.text = "LET IT SPREAD BOYFRIEND...";
 						case 324: lyricTxt.text = "LET IT...";
 						case 330: lyricTxt.text = "SPREAAAAAAAAAD";
-						case 355: lyricTxt.text = " ";
+						case 355: lyricTxt.text = "";
 						case 432: lyricTxt.text = "DIEEEEEEEEEEEEEE!!!!!";
 						case 448:
 							lyricTxt.text = "";
+							FlxTween.tween(finnBarThing, {alpha: 1}, 1);
 						case 704:
-							songSpeed = 0.5;
+							FlxTween.tween(this, {songSpeed: 0.5}, 0.1);
 							lyricTxt.text = "WHY!?!?!?!?!?";
 						case 711:
-							songSpeed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1);
+							FlxTween.tween(this, {songSpeed: SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1)}, 0.3);
 							lyricTxt.text = " ";
 						case 1088:
 							FlxTween.tween(camGame, {alpha: 0}, 0.8, {ease: FlxEase.quadInOut});
 							FlxTween.tween(camHUD, {alpha: 0}, 0.8, {ease: FlxEase.quadInOut});
 						case 1100: lyricTxt.text = "Just...";
 						case 1107: lyricTxt.text = "Let the darkness CONSUME YOU ALREADY!!!";
-						case 1136:
+						case 1135:
 							lyricTxt.text = "";
+							camHUD.alpha = 1;
+							camGame.alpha = 1;
 							theBlackness.alpha = 1;
 							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
 							addCharacterToList('fhfinn-white', 1);
 							triggerEventNote('Change Character', '1', 'fhfinn-white');
-							camHUD.alpha = 1;
-							camGame.alpha = 1;
 							addCharacterToList('fhbf-white', 0);
 							triggerEventNote('Change Character', '0', 'fhbf-white');
 							if(gf != null) gf.visible = false;
 						case 1392:
+							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
 							theBlackness.alpha = 0;
 							triggerEventNote('Change Character', '1', 'finn-sword');
 							triggerEventNote('Change Character', '0', 'newbf');
@@ -5166,16 +5217,15 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(timeTxt, {alpha: 0}, 0.5);
 						case 2447:
 							dad.visible = false;
+							theBlackness.alpha = 1;
 							if(gf != null) gf.visible = false;
-							theBlackness.alpha = 1;
-						case 2527:
-							theBlackness.alpha = 1;
 						case 2543:
 							playerStrums.forEach(function(strum:StrumNote) {
 								strum.alpha = 0;
 								FlxTween.tween(strum, {alpha: 1}, 1);
 							});
 							FlxTween.tween(camGame, {alpha: 1}, 1);
+							boyfriend.visible = true;
 						case 2687:
 							if(gf != null) {
 								gf.alpha = 0;
@@ -5187,6 +5237,10 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(strum, {alpha: 1}, 20);
 							});
 						case 2943:
+							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
+							FlxTween.tween(timeBar, {alpha: 1}, 1);
+							FlxTween.tween(timeBarBG, {alpha: 1}, 1);
+							FlxTween.tween(timeTxt, {alpha: 1}, 1);
 							theBlackness.alpha = 0;
 							dad.visible = true;
 							iconP1.alpha = 1;
@@ -5203,7 +5257,10 @@ class PlayState extends MusicBeatState
 								lyricTxt.color = dadColor;});
 						case 3199:
 							lyricTxt.text = " ";
+						case 3471: if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
+						case 4013: lyricTxt.text = "BOY...";
 						case 4015:
+							lyricTxt.text = "BOYFREEEEEEEEEEEIIIIIIIIIIIII....";
 						    playerStrums.forEach(function(strum:StrumNote) {
 								FlxTween.tween(strum, {alpha: 0}, 1);
 							});
@@ -5218,9 +5275,11 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(pibbyHealthbar, {alpha: 0}, 1);
 							FlxTween.tween(finnBarThing, {alpha: 0}, 1);
 							FlxTween.tween(scoreTxt, {alpha: 0}, 1);
+						case 4044: lyricTxt.text = "NOOOOOOOOOOOOOOOOOOO...";
+						case 4059: lyricTxt.text = " ";
 						case 4366:
 							var fallenHeroText:FlxText = new FlxText(0, 0, FlxG.width, "Fallen Hero", 64);
-							fallenHeroText.setFormat(Paths.font('vcr.ttf'), 64, FlxColor.WHITE, CENTER);
+							fallenHeroText.setFormat(Paths.font('finn.ttf'), 64, FlxColor.WHITE, CENTER);
 							fallenHeroText.screenCenter(XY);
 							fallenHeroText.cameras = [camOther];
 							fallenHeroText.alpha = 0;
@@ -5228,7 +5287,7 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(fallenHeroText, {alpha: 1}, 0.5);
 
 							var authorText:FlxText = new FlxText(0, fallenHeroText.y + 80, FlxG.width, "By IAmDaDogeOfDaFuture", 32);
-							authorText.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, CENTER);
+							authorText.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER);
 							authorText.screenCenter(X); // This was already correct, but for consistency with the fix above.
 							authorText.cameras = [camOther];
 							authorText.alpha = 0;
@@ -7920,7 +7979,44 @@ class PlayState extends MusicBeatState
 							camHUD.zoom += .053 * camZoomingMult;
 						}
 					}
-			}
+				case 'Fallen Hero':
+					if (curStep >= 448 && curStep <= 704)
+					{
+						if (curBeat % 1 == 0 && ClientPrefs.camZooms)
+						{
+							abberationShaderIntensity = beatShaderAmount;
+							FlxG.camera.zoom += 0.015 * camZoomingMult;
+							camHUD.zoom += 0.03 * camZoomingMult;
+						}
+					}
+				if (curStep >= 1392 && curStep <= 1648)
+					{
+						if (curBeat % 1 == 0 && ClientPrefs.camZooms)
+						{
+							abberationShaderIntensity = beatShaderAmount;
+							FlxG.camera.zoom += 0.015 * camZoomingMult;
+							camHUD.zoom += 0.03 * camZoomingMult;
+						}
+					}
+				if (curStep >= 2175 && curStep <= 2432)
+					{
+						if (curBeat % 1 == 0 && ClientPrefs.camZooms)
+						{
+							abberationShaderIntensity = beatShaderAmount;
+							FlxG.camera.zoom += 0.015 * camZoomingMult;
+							camHUD.zoom += 0.03 * camZoomingMult;
+						}
+					}
+				if (curStep >= 3471 && curStep <= 3728)
+					{
+						if (curBeat % 1 == 0 && ClientPrefs.camZooms)
+						{
+							abberationShaderIntensity = beatShaderAmount;
+							FlxG.camera.zoom += 0.015 * camZoomingMult;
+							camHUD.zoom += 0.03 * camZoomingMult;
+						}
+					}
+			}   
 
 		setOnLuas('curBeat', curBeat); //DAWGG?????
 		callOnLuas('onBeatHit', []);
