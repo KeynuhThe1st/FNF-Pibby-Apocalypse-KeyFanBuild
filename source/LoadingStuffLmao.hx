@@ -124,6 +124,8 @@ class LoadingStuffLmao extends MusicBeatState {
         'pibby-sus' => PreloadType.atlas,
         'falsefinn' => PreloadType.atlas,
         'noherofinn' => PreloadType.atlas,
+        'fhfinn-white' => PreloadType.atlas,
+        'fhbf-white' => PreloadType.atlas,
 
         //Preload character PNG and XML
         'BOYFRIEND' => PreloadType.charXML,
@@ -177,6 +179,7 @@ class LoadingStuffLmao extends MusicBeatState {
         'Forgotten-World' => PreloadType.music,
         'Mindless' => PreloadType.music,
         'Retcon' => PreloadType.music,
+        'Fallen-Hero' => PreloadType.music,
 
         // sounds
         'confirmMenu' => PreloadType.sound,

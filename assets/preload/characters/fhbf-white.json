@@ -1,70 +1,70 @@
 {
 	"animations": [
 		{
-			"loop": true,
 			"offsets": [
 				-5,
 				240
 			],
-			"anim": "idle",
+			"loop": true,
 			"fps": 24,
-			"name": "Bf Idle",
-			"indices": []
+			"anim": "idle",
+			"indices": [],
+			"name": "Bf Idle"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				-6,
 				0
 			],
-			"anim": "singDOWN",
+			"loop": false,
 			"fps": 24,
-			"name": "Bf Down",
-			"indices": []
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "Bf Down"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				-42,
 				3
 			],
-			"anim": "singRIGHT",
+			"loop": false,
 			"fps": 24,
-			"name": "Bf Right",
-			"indices": []
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "Bf Right"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				-51,
 				25
 			],
-			"anim": "singUP",
+			"loop": false,
 			"fps": 24,
-			"name": "Bf Up",
-			"indices": []
+			"anim": "singUP",
+			"indices": [],
+			"name": "Bf Up"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				19,
 				0
 			],
-			"anim": "singLEFT",
+			"loop": false,
 			"fps": 24,
-			"name": "Bf Left",
-			"indices": []
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "Bf Left"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				25,
 				4
 			],
-			"anim": "miss",
+			"loop": false,
 			"fps": 24,
-			"name": "miss",
-			"indices": []
+			"anim": "miss",
+			"indices": [],
+			"name": "miss"
 		}
 	],
 	"no_antialiasing": false,
@@ -82,7 +82,7 @@
 	],
 	"camera_position": [
 		-170,
-		140
+		100
 	],
 	"sing_duration": 4,
 	"scale": 1

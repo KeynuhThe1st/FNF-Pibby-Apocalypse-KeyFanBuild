@@ -1,59 +1,59 @@
 {
 	"animations": [
 		{
-			"loop": true,
 			"offsets": [
 				0,
 				0
 			],
-			"anim": "idle",
+			"loop": true,
 			"fps": 24,
-			"name": "FInn Idle",
-			"indices": []
+			"anim": "idle",
+			"indices": [],
+			"name": "FInn Idle"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				148,
 				7
 			],
-			"anim": "singLEFT",
+			"loop": false,
 			"fps": 24,
-			"name": "FInn Left",
-			"indices": []
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "FInn Left"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				8,
 				8
 			],
-			"anim": "singDOWN",
+			"loop": false,
 			"fps": 24,
-			"name": "FInn Down",
-			"indices": []
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "FInn Down"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				57,
 				80
 			],
-			"anim": "singUP",
+			"loop": false,
 			"fps": 24,
-			"name": "FInn Up",
-			"indices": []
+			"anim": "singUP",
+			"indices": [],
+			"name": "FInn Up"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				39,
 				53
 			],
-			"anim": "singRIGHT",
+			"loop": false,
 			"fps": 24,
-			"name": "FInn Right",
-			"indices": []
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "FInn Right"
 		}
 	],
 	"no_antialiasing": false,
@@ -71,7 +71,7 @@
 	],
 	"camera_position": [
 		-180,
-		100
+		50
 	],
 	"sing_duration": 6.1,
 	"scale": 1

@@ -231,6 +231,8 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
+		ClientPrefs.muteMenuMusic();
+
 		super.create();
 
         if(!FlxG.save.data.debugBuild) {
@@ -251,6 +253,8 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		ClientPrefs.muteMenuMusic();
+
         if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
@@ -267,7 +271,7 @@ class MainMenuState extends MusicBeatState
 	
 		Conductor.changeBPM(100);
 
-		if (FlxG.sound.music.volume < 0.8)
+		if (FlxG.sound.music.volume < 0.8 && !ClientPrefs.MusicMenuMute)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 			if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;

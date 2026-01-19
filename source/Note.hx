@@ -305,8 +305,9 @@ class Note extends FlxSprite
 		if(texture.length < 1) {
 			skin = PlayState.SONG.arrowSkin;
 			if(skin == null || skin.length < 1) {
-				skin = 'NOTE_assets';
-			}
+				// ClientPrefs.NoteAssetSwitch: Switches from 'NOTE_assets' to 'NewNOTE_assets' for note skins
+				skin = (ClientPrefs.NoteAssetSwitch ? 'NewNOTE_assets' : 'NOTE_assets');
+			}	
 		}
 
 		var animName:String = null;

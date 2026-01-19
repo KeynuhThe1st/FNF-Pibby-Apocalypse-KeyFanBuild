@@ -1,7 +1,7 @@
 var dadCamZoom = -1;
 var coolStep = 0; // rare ass fix
 
-var doThunder:Bool = false;
+var doThunder:Bool = true;
 var pixel;
 
 function onCreate()
@@ -187,6 +187,8 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) particles.alpha = 0;
             if (!ClientPrefs.lowQuality) dangling.alpha = 0;
             if (!ClientPrefs.lowQuality) corruption.alpha = 0;
+            if (!ClientPrefs.lowQuality) thunder.alpha = 1;
+            treehouse.alpha = 1;
             
             bg.alpha = 1;
         }else if (curStep == 1536)
@@ -203,6 +205,10 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) particles.alpha = 0;
             if (!ClientPrefs.lowQuality) dangling.alpha = 0;
             if (!ClientPrefs.lowQuality) corruption.alpha = 0;
+            if (!ClientPrefs.lowQuality) thunder.alpha = 1;
+            treehouse.alpha = 1;
+            bg.alpha = 1;
+            doThunder = true;
 
             if (!ClientPrefs.lowQuality) thunder.alpha = 1;
             treehouse.alpha = 1;

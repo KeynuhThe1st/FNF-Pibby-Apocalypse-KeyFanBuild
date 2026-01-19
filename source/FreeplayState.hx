@@ -331,6 +331,8 @@ class FreeplayState extends MusicBeatState
 				}
 		});
 
+		ClientPrefs.muteMenuMusic();
+
 		super.create();
 	}
 
@@ -357,7 +359,9 @@ class FreeplayState extends MusicBeatState
     var shaderStuff:Float = 0;
 	override function update(elapsed:Float)
 	{
-		if (FlxG.sound.music.volume < 0.7)
+		ClientPrefs.muteMenuMusic();
+
+		if (FlxG.sound.music.volume < 0.7 && !ClientPrefs.MusicMenuMute)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}

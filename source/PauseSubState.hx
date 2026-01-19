@@ -124,6 +124,8 @@ class PauseSubState extends MusicBeatSubstate
 		add(grpMenuShit);
 
 		regenMenu();
+		mutePauseMusic();
+
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
@@ -131,8 +133,10 @@ class PauseSubState extends MusicBeatSubstate
 	var cantUnpause:Float = 0.1;
 	override function update(elapsed:Float)
 	{
+		mutePauseMusic();
+
 		cantUnpause -= elapsed;
-		if (pauseMusic.volume < 0.5)
+		if (pauseMusic.volume < 0.5 && !ClientPrefs.MusicMenuMute)
 			pauseMusic.volume += 0.01 * elapsed;
 
 		super.update(elapsed);
@@ -179,6 +183,17 @@ class PauseSubState extends MusicBeatSubstate
 		{
 					PlayState.changedDifficulty = true;
 			selectAndPress();
+		}
+	}
+
+	function mutePauseMusic()
+	{
+		if (pauseMusic != null)
+		{
+			if (ClientPrefs.MusicMenuMute)
+				pauseMusic.volume = 0;
+			else if (pauseMusic.volume == 0)
+				pauseMusic.volume = ClientPrefs.lastVolume;
 		}
 	}
 
@@ -294,7 +309,7 @@ class PauseSubState extends MusicBeatSubstate
 					MusicBeatState.switchState(new FreeplayState());
 				}
 				PlayState.cancelMusicFadeTween();
-				FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'));
+				FlxG.sound.playMusic(Paths.music('fpmenu'));
 				PlayState.changedDifficulty = false;
 				PlayState.chartingMode = false;
 		}

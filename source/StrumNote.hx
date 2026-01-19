@@ -21,8 +21,9 @@ class StrumNote extends FlxSprite
 	private function set_texture(value:String):String {
 		if(texture != value) {
 			texture = value;
+			texture = (ClientPrefs.NoteAssetSwitch ? 'NewNOTE_assets' : 'NOTE_assets');
 			reloadNote();
-		}
+		}	
 		return value;
 	}
 
@@ -42,7 +43,7 @@ class StrumNote extends FlxSprite
 	}
 
 	public function reloadNote()
-	{
+		{
 		var lastAnim:String = null;
 		if(animation.curAnim != null) lastAnim = animation.curAnim.name;
 

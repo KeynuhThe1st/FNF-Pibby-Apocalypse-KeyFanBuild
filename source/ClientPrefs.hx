@@ -34,12 +34,15 @@ class ClientPrefs {
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
 	public static var hitsoundVolume:Float = 0;
-	public static var pauseMusic:String = 'Tea Time';
+	public static var pauseMusic:String = 'Breakfast';
 	public static var checkForUpdates:Bool = true;
 	public static var comboStacking = true;
     public static var useGPUCaching:Bool = false;
 	public static var widescreen:Bool = false;
 	public static var autopause:Bool = true;
+	public static var NoteAssetSwitch:Bool = false;
+	public static var MusicMenuMute:Bool = false;
+	
 
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
@@ -146,6 +149,8 @@ class ClientPrefs {
 		FlxG.save.data.checkForUpdates = checkForUpdates;
 		FlxG.save.data.comboStacking = comboStacking;
 		FlxG.save.data.useGPUCaching = useGPUCaching;
+		FlxG.save.data.NoteAssetSwitch = NoteAssetSwitch;
+		FlxG.save.data.MusicMenuMute = MusicMenuMute;
 	
 		FlxG.save.flush();
 
@@ -157,6 +162,12 @@ class ClientPrefs {
 	}
 
 	public static function loadPrefs() {
+		if (FlxG.save.data.MusicMenuMute != null) {
+			MusicMenuMute = FlxG.save.data.MusicMenuMute;
+		}
+		if (FlxG.save.data.NoteAssetSwitch != null) {
+			NoteAssetSwitch = FlxG.save.data.NoteAssetSwitch;
+		}
 		if(FlxG.save.data.autopause != null) {
 			autopause = FlxG.save.data.autopause;
 		}
@@ -340,5 +351,22 @@ class ClientPrefs {
 			len = copiedArray.length;
 		}
 		return copiedArray;
+	}
+
+	public static var lastVolume:Float = 1;
+	public static function muteMenuMusic()
+	{
+		if (FlxG.sound.music != null)
+		{
+			if (MusicMenuMute) {
+				if (FlxG.sound.music.volume > 0)
+					lastVolume = FlxG.sound.music.volume;
+				FlxG.sound.music.volume = 0;
+			}
+			else {
+				if (FlxG.sound.music.volume < lastVolume)
+					FlxG.sound.music.volume = lastVolume;
+			}
+		}
 	}
 }

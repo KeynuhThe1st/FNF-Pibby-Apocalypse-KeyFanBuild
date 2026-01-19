@@ -103,6 +103,17 @@ class PACreditsState extends MusicBeatState
 
 		creditsText = new FlxText(20, 20, 0, '< BACK', 30);
 		creditsText.setFormat(Paths.font("menuBUTTONS.ttf"), 54, FlxColor.WHITE, LEFT);
+		creditsText.borderSize = 1.5;
+		creditsText.antialiasing = ClientPrefs.globalAntialiasing;
+		FlxMouseEvent.add(creditsText, function(spr:FlxSprite) {
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			MusicBeatState.switchState(new MainMenuState());
+			FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'));
+		}, null, function(spr:FlxSprite) {
+			FlxTween.tween(spr, {alpha: 0.5}, 0.15);
+		}, function(spr:FlxSprite) {
+			FlxTween.tween(spr, {alpha: 1}, 0.25);
+		});
 		add(creditsText);
 
 		currentGroup = new FlxText(0, 0, 0, "", 70);
@@ -219,6 +230,8 @@ class PACreditsState extends MusicBeatState
 						ease: FlxEase.quadInOut, startDelay: 2});
 				}
 		});
+
+		ClientPrefs.muteMenuMusic();
 	}
 
 /*	function precacheImage(name:String) {
@@ -230,6 +243,8 @@ class PACreditsState extends MusicBeatState
 	var holdTime:Float = 0;
 	override function update(elapsed:Float)
 	{
+		ClientPrefs.muteMenuMusic();
+
 		creditSpr.loadGraphic(Paths.returnGraphic('pacreditarts/' + people[curSelected][1] + FlxG.random.int(1, 2), null, true));
 
 		if (FlxG.random.int(0, 1) < 0.01) 
@@ -242,7 +257,7 @@ class PACreditsState extends MusicBeatState
 			pibbyFNF.uTime.value[0] += elapsed;
 		}
 		
-		if (FlxG.sound.music.volume < 0.7)
+		if (FlxG.sound.music.volume < 0.7 && !ClientPrefs.MusicMenuMute)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
@@ -266,11 +281,17 @@ class PACreditsState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('scrollMenu'));
 		}
 
+		if (FlxG.mouse.wheel != 0)
+		{
+			changeSelection(FlxG.mouse.wheel);
+			FlxG.sound.play(Paths.sound('scrollMenu'));
+		}
+
 		progress = FlxMath.lerp(progress, curSelected, CoolUtil.boundTo(elapsed * 20, 0, 1));
 		creditSpr.scale.x = FlxMath.lerp(creditSpr.scale.x, 0.4, CoolUtil.boundTo(elapsed * 3.8, 0, 1));
 		creditSpr.scale.y = FlxMath.lerp(creditSpr.scale.y, 0.4, CoolUtil.boundTo(elapsed * 3.8, 0, 1));
 	}
-
+	
 	var targetY:Float;
 
 	function changeSelection(thing:Int) {

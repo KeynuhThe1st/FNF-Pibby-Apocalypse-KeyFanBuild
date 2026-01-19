@@ -550,9 +550,10 @@ class TitleState extends MusicBeatState
 			switch (sickBeats)
 			{
 				case 1:
-					//FlxG.sound.music.stop();
-					FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'), 0);
+					if(FlxG.sound.music == null)
+						FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.5);
+					ClientPrefs.muteMenuMusic();
 				case 2:
 					#if PSYCH_WATERMARKS
 					createCoolText(['Psych Engine by'], 15);

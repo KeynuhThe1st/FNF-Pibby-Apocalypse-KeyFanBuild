@@ -97,6 +97,20 @@ class PibbyOptionsSubState extends BaseOptionsMenu
             true);
         addOption(option);
 
+        var option:Option = new Option('Notes Asset Switch', //Name
+            "If checked, allows you to switch note assets\nusing the 'Note Asset Switch' keybind.", //Description
+            'NoteAssetSwitch', //Save data variable name
+            'bool', //Variable type
+            false); //Default value
+        addOption(option);
+
+        var option:Option = new Option('Mute Music Menu', //Name
+            "If checked, mutes the music in the main menu, freeplay, credits and pause menus.", //Description
+            'MusicMenuMute', //Save data variable name
+            'bool', //Variable type
+            false); //Default value
+        addOption(option);
+
 
 
         for (i in 0...20) { //funny blank options

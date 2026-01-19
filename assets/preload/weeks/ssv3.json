@@ -1,0 +1,26 @@
+{
+	"storyName": "",
+	"hideFreeplay": false,
+	"weekBackground": "stage",
+	"weekBefore": "finn",
+	"startUnlocked": true,
+	"weekCharacters": [
+		"",
+		"bf",
+		"gf"
+	],
+	"songs": [
+		[
+			"Suffering Siblings V3",
+			"finn",
+			[
+				82,
+				165,
+				235
+			],
+			75
+		]
+	],
+	"hideStoryMode": true,
+	"weekName": "ssv3"
+}
