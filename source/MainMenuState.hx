@@ -73,7 +73,7 @@ class MainMenuState extends MusicBeatState
 		#end
 		WeekData.loadTheFirstEnabledMod();
 
-		openfl.Lib.application.window.title = "Pibby: Apocalypse - Main Menu";
+		openfl.Lib.application.window.title = "Pibby Apocalypse: KeyFanBuild - Main Menu";
 
 		#if desktop
 		// Updating Discord Rich Presence
@@ -189,7 +189,7 @@ class MainMenuState extends MusicBeatState
 		aweTxt.antialiasing = ClientPrefs.globalAntialiasing;
 		add(aweTxt);
 
-        verTxt = new FlxText(0, FlxG.height - 65, 0, 'PIBBY APOCALYPSE DEMO - KeyFanBuild 2.0', 8);
+        verTxt = new FlxText(0, FlxG.height - 65, 0, 'PIBBY APOCALYPSE: KEYFANBUILD - [ALPHA]', 8);
 		verTxt.setFormat(Paths.font("menuBUTTONS.ttf"), 24, FlxColor.WHITE, LEFT);
 		verTxt.alpha = 1;
 		verTxt.antialiasing = ClientPrefs.globalAntialiasing;
@@ -206,15 +206,15 @@ class MainMenuState extends MusicBeatState
 			switch (optionShit[i])
 			{
 				case 'CREDITS':
-					menuItem.x = 795;
+					menuItem.x = 415;
 					menuItem.y = -75;
 
 				case 'FREEPLAY':
 					menuItem.y = -75;
-					menuItem.x = 170;
+					menuItem.x = 45;
 					
 				case 'SUBMIT A SONG':
-					menuItem.x = 485;
+					menuItem.x = 585;
 					menuItem.y = -75;
 			}
 			menuItems.add(menuItem);
@@ -225,6 +225,24 @@ class MainMenuState extends MusicBeatState
 			//menuItem.setGraphicSize(Std.int(menuItem.width * 0.58));
 			menuItem.updateHitbox();
 			menuItem.x -= 125;
+
+			FlxMouseEvent.add(menuItem, function(spr:FlxSprite)
+			{
+				if (!selectedSomethin)
+				{
+					curSelected = spr.ID;
+					changeItem();
+					selectItem();
+				}
+			}, null, function(spr:FlxSprite)
+			{
+				if (!selectedSomethin && curSelected != spr.ID)
+				{
+					curSelected = spr.ID;
+					changeItem();
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+				}
+			});
 		}
 
 		// NG.core.calls.event.logEvent('swag').send();
@@ -307,48 +325,7 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				selectedSomethin = true;
-				FlxG.sound.play(Paths.sound('confirmMenu'));
-
-				menuItems.forEach(function(spr:FlxSprite)
-				{
-					if (curSelected != spr.ID)
-					{
-						FlxTween.tween(spr, {alpha: 0}, 0.4, {
-							ease: FlxEase.quadOut,
-							onComplete: function(twn:FlxTween)
-							{
-								spr.kill();
-							}
-						});
-					}
-					else
-					{
-						FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
-						{
-							var daChoice:String = optionShit[curSelected];
-
-							switch (daChoice)
-							{
-								case 'STORY MODE':
-									MusicBeatState.switchState(new StoryMenuState());
-								case 'FREEPLAY':
-                                    MusicBeatState.switchState(new FreeplayState());
-									FlxG.sound.playMusic(Paths.music('fpmenu'));
-								case 'CREDITS':
-									//credits aint done i just did this to make testing easier
-									LoadingState.loadAndSwitchState(new PACreditsState());
-									FlxG.sound.playMusic(Paths.music('creditsmenu'));
-								case 'SUBMIT A SONG':
-									Lib.getURL(new URLRequest('https://forms.gle/ZrUg9pyGVBsJZZg78'));
-									selectedSomethin = false;
-
-                                    //Lib.getURL(new URLRequest('https://gamebanana.com/wips/73842'));
-                                    //MusicBeatState.switchState(this);
-							}
-						});
-					}
-				});
+				selectItem();
 			}
 		}
 
@@ -396,5 +373,51 @@ class MainMenuState extends MusicBeatState
 			}
 		});
 
+	}
+
+	function selectItem()
+	{
+		selectedSomethin = true;
+		FlxG.sound.play(Paths.sound('confirmMenu'));
+
+		menuItems.forEach(function(spr:FlxSprite)
+		{
+			if (curSelected != spr.ID)
+			{
+				FlxTween.tween(spr, {alpha: 0}, 0.4, {
+					ease: FlxEase.quadOut,
+					onComplete: function(twn:FlxTween)
+					{
+						spr.kill();
+					}
+				});
+			}
+			else
+			{
+				FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+				{
+					var daChoice:String = optionShit[curSelected];
+
+					switch (daChoice)
+					{
+						case 'STORY MODE':
+							MusicBeatState.switchState(new StoryMenuState());
+						case 'FREEPLAY':
+							MusicBeatState.switchState(new FreeplayState());
+							FlxG.sound.playMusic(Paths.music('fpmenu'));
+						case 'CREDITS':
+							//credits aint done i just did this to make testing easier
+							LoadingState.loadAndSwitchState(new PACreditsState());
+							FlxG.sound.playMusic(Paths.music('creditsmenu'));
+						case 'SUBMIT A SONG':
+							Lib.getURL(new URLRequest('https://forms.gle/ZrUg9pyGVBsJZZg78'));
+							selectedSomethin = false;
+
+							//Lib.getURL(new URLRequest('https://gamebanana.com/wips/73842'));
+							//MusicBeatState.switchState(this);
+					}
+				});
+			}
+		});
 	}
 }

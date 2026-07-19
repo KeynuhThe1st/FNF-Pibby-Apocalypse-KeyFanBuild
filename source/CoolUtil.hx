@@ -44,6 +44,10 @@ class CoolUtil
 
 			switch (song)
 			{
+				case "Suffering Siblings V3":
+					artist = 'Awe (ft. NdYm1uM, Kylevi & HayseedHere)';
+				case "Fallen Hero":
+					artist = 'IAmDaDogeOfDaFuture';
 				case "Mindless":
 					artist = 'Sevc_Ext_277';
 

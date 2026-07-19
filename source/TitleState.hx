@@ -220,7 +220,7 @@ class TitleState extends MusicBeatState
 			}
 			#end
 
-			openfl.Lib.application.window.title = "Pibby: Apocalypse - Title Screen";
+			openfl.Lib.application.window.title = "Pibby Apocalypse: KeyFanBuild - Title Screen";
 
 			if (initialized)
 				startIntro();
@@ -399,6 +399,8 @@ class TitleState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
+
+		ClientPrefs.muteMenuMusic();
 
 		// CHEAT CODE FOR DEBUG MODE
 		if (keyIdx <= keyCombo.length - 1)

@@ -29,6 +29,7 @@ import openfl.filters.ShaderFilter;
 #if MODS_ALLOWED
 import sys.FileSystem;
 #end
+import flixel.input.mouse.FlxMouseEvent;
 
 using StringTools;
 
@@ -115,7 +116,9 @@ class FreeplayState extends MusicBeatState
 		DiscordClient.changePresence("🗺️ | In Freeplay", null);
 		#end
 
-		openfl.Lib.application.window.title = "Pibby: Apocalypse - Freeplay";
+		openfl.Lib.application.window.title = "Pibby Apocalypse: KeyFanBuild - Freeplay";
+
+		FlxG.mouse.visible = true;
 
 		for (i in 0...WeekData.weeksList.length) {
 			if(weekIsLocked(WeekData.weeksList[i])) continue;
@@ -193,6 +196,23 @@ class FreeplayState extends MusicBeatState
 				if (ClientPrefs.shaders) arrowL.shader = bloomFNF;
 				arrowL.screenCenter();
 
+				FlxMouseEvent.add(arrowL, function(spr:FlxSprite) {
+					changeSelection(-1);
+					FlxTween.tween(arrowL, {alpha: 0.4}, 0.1, {
+						ease: FlxEase.quadInOut,
+						onComplete: 
+						function (twn:FlxTween)
+							{
+								FlxTween.tween(arrowL, {alpha: 1}, 0.1, {
+									ease: FlxEase.quadInOut,
+									onComplete: 
+									function (twn:FlxTween)
+										{
+											arrowL.alpha = 1;
+										}});
+							}});
+				}, null, null, null);
+
 				arrowR = new FlxSprite().loadGraphic(Paths.image('fpmenu/arrowR'));
 				arrowR.antialiasing = ClientPrefs.globalAntialiasing;
 				add(arrowR);
@@ -200,6 +220,23 @@ class FreeplayState extends MusicBeatState
 				arrowR.blend = ADD;
 				if (ClientPrefs.shaders) arrowR.shader = bloomFNF;
 				arrowR.screenCenter();
+
+				FlxMouseEvent.add(arrowR, function(spr:FlxSprite) {
+					changeSelection(1);
+					FlxTween.tween(arrowR, {alpha: 0.4}, 0.1, {
+						ease: FlxEase.quadInOut,
+						onComplete: 
+						function (twn:FlxTween)
+							{
+								FlxTween.tween(arrowR, {alpha: 1}, 0.1, {
+									ease: FlxEase.quadInOut,
+									onComplete: 
+									function (twn:FlxTween)
+										{
+											arrowR.alpha = 1;
+										}});
+							}});
+				}, null, null, null);
 			}
 
 		songText = new FlxTypeText(image.x, image.y + 35, Std.int(FlxG.width * 1), "");

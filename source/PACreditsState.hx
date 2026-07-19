@@ -90,7 +90,7 @@ class PACreditsState extends MusicBeatState
 		DiscordClient.changePresence("🧑 | In the Credits", null);
 		#end
 
-		openfl.Lib.application.window.title = "Pibby: Apocalypse - Credits";
+		openfl.Lib.application.window.title = "Pibby Apocalypse: KeyFanBuild - Credits";
 
 		persistentUpdate = true;
 		bg = new FlxSprite();

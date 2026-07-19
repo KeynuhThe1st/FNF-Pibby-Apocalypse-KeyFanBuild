@@ -62,6 +62,9 @@ class OptionsState extends MusicBeatState
 		DiscordClient.changePresence("⚙️ | In the Options Menu", null);
 		#end
 
+		openfl.Lib.application.window.title = "Pibby Apocalypse: KeyFanBuild - Options Menu";
+		//openfl.Lib.application.window.title = "Pibby: Apocalypse - Options Menu"; --- IGNORE ---
+
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
 		bg.updateHitbox();
