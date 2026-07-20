@@ -192,8 +192,7 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			if (ClientPrefs.MusicMenuMute)
 				pauseMusic.volume = 0;
-			else if (pauseMusic.volume == 0)
-				pauseMusic.volume = ClientPrefs.lastVolume;
+			var pauseMusicTargetVolume:Float = 0.5;
 		}
 	}
 

@@ -23,6 +23,13 @@ function onCreate()
     treehouse.updateHitbox();
     treehouse.alpha = 0.0001;
 
+    rain = new flixel.FlxSprite(1050, 700);
+    rain.frames = retrieveAsset('images/Rain', 'atlas');
+    rain.animation.addByPrefix('rain', 'Rain', 24, true);
+    rain.animation.play('rain');
+    rain.antialiasing = ClientPrefs.globalAntialiasing;
+    rain.alpha = 0.0001;
+
     if (!ClientPrefs.lowQuality)
     {
         thunder = new flixel.FlxSprite();
@@ -109,6 +116,7 @@ function onCreate()
     if (!ClientPrefs.lowQuality) add(thunder);
     add(treehouse);
     if (!ClientPrefs.lowQuality) add(thunder);
+    foreground.add(rain);
 
     // reveal shit cuz yes
 
@@ -146,6 +154,7 @@ function onStepHit(curStep:Int)
             coolGradient.alpha = 1;
             idkWhatAreThatThings.alpha = 1;
             if (!ClientPrefs.lowQuality) thunder.alpha = 0;
+            rain.alpha = 0.0001;
             treehouse.alpha = 0;
             bg.alpha = 0;
             doThunder = false;
@@ -163,6 +172,7 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) particles.alpha = 1;
             if (!ClientPrefs.lowQuality) dangling.alpha = 1;
             if (!ClientPrefs.lowQuality) corruption.alpha = 1;
+            rain.alpha = 0.0001;
 
             dadCamZoom = 0.85;
         }else if (curStep == 628)
@@ -174,6 +184,7 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) FlxTween.tween(corruption, {alpha: 1}, 3);
 
             if (!ClientPrefs.lowQuality) thunder.alpha = 1;
+            rain.alpha = 1;
             treehouse.alpha = 1;
             bg.alpha = 0;
             doThunder = true;
@@ -188,6 +199,7 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) dangling.alpha = 0;
             if (!ClientPrefs.lowQuality) corruption.alpha = 0;
             if (!ClientPrefs.lowQuality) thunder.alpha = 1;
+            rain.alpha = 1;
             treehouse.alpha = 1;
             
             bg.alpha = 1;
@@ -206,6 +218,7 @@ function onStepHit(curStep:Int)
             if (!ClientPrefs.lowQuality) dangling.alpha = 0;
             if (!ClientPrefs.lowQuality) corruption.alpha = 0;
             if (!ClientPrefs.lowQuality) thunder.alpha = 1;
+            rain.alpha = 1;
             treehouse.alpha = 1;
             bg.alpha = 1;
             doThunder = true;
