@@ -34,8 +34,8 @@ function onCreate()
     {
         thunder = new flixel.FlxSprite();
         thunder.x = -550;
-        thunder.y = -800;
-        thunder.scale.set(1.2, 1,2);
+        thunder.y = -400;
+        thunder.scale.set(2.2, 2.2);
         thunder.frames = retrieveAsset('images/Lighting', 'atlas');
         thunder.animation.addByPrefix('thunder', 'LIGHTNING', 24, false);
         thunder.alpha = 0.0001;
@@ -115,7 +115,6 @@ function onCreate()
     add(bg);
     if (!ClientPrefs.lowQuality) add(thunder);
     add(treehouse);
-    if (!ClientPrefs.lowQuality) add(thunder);
     foreground.add(rain);
 
     // reveal shit cuz yes
