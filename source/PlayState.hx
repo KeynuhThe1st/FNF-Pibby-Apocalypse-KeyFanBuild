@@ -623,6 +623,23 @@ class PlayState extends MusicBeatState
             }
         }
 
+        var eventDir:String = 'data/${songName}/events';
+        if (!FileSystem.exists('assets/${eventDir}/events.hx') && FileSystem.isDirectory('assets/data')) {
+            for (folder in FileSystem.readDirectory('assets/data')) {
+                if (folder.toLowerCase() == songName && FileSystem.isDirectory('assets/data/${folder}')) {
+                    eventDir = 'data/${folder}/events';
+                    break;
+                }
+            }
+        }
+        if (FileSystem.exists('assets/${eventDir}/events.hx')) {
+            var eventScript:ScriptConstructor = new ScriptConstructor(eventDir, 'events');
+            if (eventScript.script != null) {
+                _scriptMap.set('events', eventScript.script);
+                allScripts.push(eventScript);
+                add(eventScript);
+            }
+        }
 		var stageData:StageFile = StageData.getStageFile(curStage);
 		if(stageData == null) { //Stage couldn't be found, create a dummy stage for preventing a crash
 			stageData = {
@@ -1216,6 +1233,23 @@ class PlayState extends MusicBeatState
 			#end
 		}
 		#end
+        // Load HScript handlers only for custom events used by this chart.
+        // Lua handlers above and HScript handlers can coexist for the same event.
+        for (event in eventPushedMap.keys()) {
+            var scriptPath:String = Paths.getPreloadPath('custom_events/' + event + '.hx');
+            #if MODS_ALLOWED
+            var modScriptPath:String = Paths.modFolders('custom_events/' + event + '.hx');
+            if (FileSystem.exists(modScriptPath)) scriptPath = modScriptPath;
+            #end
+            if (FileSystem.exists(scriptPath) && !FileSystem.isDirectory(scriptPath)) {
+                var eventScript:ScriptConstructor = new ScriptConstructor('custom_events', event, scriptPath);
+                if (eventScript.script != null) {
+                    _scriptMap.set('custom_events/' + event, eventScript.script);
+                    allScripts.push(eventScript);
+                    add(eventScript);
+                }
+            }
+        }
 		noteTypeMap.clear();
 		noteTypeMap = null;
 		eventPushedMap.clear();
@@ -5473,10 +5507,6 @@ class PlayState extends MusicBeatState
 											camHUD.alpha = 1;
 										}
 								});
-						case 607: 
-							triggerEventNote('Change Character', 'Dad', 'finnanimstuff');
-							triggerEventNote('Play Animation', 'lesgo', 'Dad');
-							iconP2.changeIcon('fakefinn');
 						case 608: 
 							FlxTween.tween(theBlackness, {alpha: 1}, 0.6, {ease: FlxEase.sineInOut});
 						// I love timing shit.
@@ -7319,7 +7349,8 @@ class PlayState extends MusicBeatState
 									}
 							});
 					}
-
+				
+					// NO HERO REMIX EVENTS
 				case 'No Hero Remix':
 					switch (curStep)
 					{
@@ -7461,6 +7492,7 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(camHUD, {alpha: 0.001}, 0.5, {ease: FlxEase.sineInOut});
 
 					}
+					// END OF NO HERO REMIX EVENTS
 				case 'Suffering Siblings V3':
 					switch (curStep)
 					{

@@ -197,6 +197,7 @@ class FreeplayState extends MusicBeatState
 				arrowL.screenCenter();
 
 				FlxMouseEvent.add(arrowL, function(spr:FlxSprite) {
+					if (subState != null) return;
 					changeSelection(-1);
 					FlxTween.tween(arrowL, {alpha: 0.4}, 0.1, {
 						ease: FlxEase.quadInOut,
@@ -222,6 +223,7 @@ class FreeplayState extends MusicBeatState
 				arrowR.screenCenter();
 
 				FlxMouseEvent.add(arrowR, function(spr:FlxSprite) {
+					if (subState != null) return;
 					changeSelection(1);
 					FlxTween.tween(arrowR, {alpha: 0.4}, 0.1, {
 						ease: FlxEase.quadInOut,
@@ -441,136 +443,141 @@ class FreeplayState extends MusicBeatState
 		scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 		positionHighscore();
 
-		var leftP = controls.UI_LEFT_P;
-		var rightP = controls.UI_RIGHT_P;
-		var accepted = controls.ACCEPT;
-		var space = FlxG.keys.justPressed.SPACE;
-		var ctrl = FlxG.keys.justPressed.CONTROL;
+		FlxG.camera.zoom = FlxMath.lerp(1, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
+		threatLerp = FlxMath.lerp(threatLerp, threatPercent, CoolUtil.boundTo(elapsed * 4, 0, 1));
 
-		var shiftMult:Int = 1;
-		if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
-
-		if (songs.length > 1)
+		// Keep visuals updating while the substate owns Freeplay's input.
+		if (subState == null)
 		{
-			if (leftP)
-			{
-				if (!ClientPrefs.lowQuality) FlxTween.tween(arrowL, {alpha: 0.4}, 0.1, {
-					ease: FlxEase.quadInOut,
-					onComplete: 
-					function (twn:FlxTween)
-						{
-							FlxTween.tween(arrowL, {alpha: 1}, 0.1, {
-								ease: FlxEase.quadInOut,
-								onComplete: 
-								function (twn:FlxTween)
-									{
-										arrowL.alpha = 1;
-									}});
-						}});
-				changeSelection(-shiftMult);
-				holdTime = 0;
-			}
-			if (rightP)
-			{
-				if (!ClientPrefs.lowQuality) FlxTween.tween(arrowR, {alpha: 0.4}, 0.1, {
-					ease: FlxEase.quadInOut,
-					onComplete: 
-					function (twn:FlxTween)
-						{
-							FlxTween.tween(arrowR, {alpha: 1}, 0.1, {
-								ease: FlxEase.quadInOut,
-								onComplete: 
-								function (twn:FlxTween)
-									{
-										arrowR.alpha = 1;
-									}});
-						}});
-				changeSelection(shiftMult);
-				holdTime = 0;
-			}
+			var leftP = controls.UI_LEFT_P;
+			var rightP = controls.UI_RIGHT_P;
+			var accepted = controls.ACCEPT;
+			var space = FlxG.keys.justPressed.SPACE;
+			var ctrl = FlxG.keys.justPressed.CONTROL;
 
-			if(controls.UI_DOWN)
-			{
-				var checkLastHold:Int = Math.floor((holdTime - 0.5) * 10);
-				holdTime += elapsed;
-				var checkNewHold:Int = Math.floor((holdTime - 0.5) * 10);
+			var shiftMult:Int = 1;
+			if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
 
-				if(holdTime > 0.5 && checkNewHold - checkLastHold > 0)
+			if (songs.length > 1)
+			{
+				if (leftP)
 				{
-					changeSelection((checkNewHold - checkLastHold) * (controls.UI_UP ? -shiftMult : shiftMult));
+					if (!ClientPrefs.lowQuality) FlxTween.tween(arrowL, {alpha: 0.4}, 0.1, {
+						ease: FlxEase.quadInOut,
+						onComplete: 
+						function (twn:FlxTween)
+							{
+								FlxTween.tween(arrowL, {alpha: 1}, 0.1, {
+									ease: FlxEase.quadInOut,
+									onComplete: 
+									function (twn:FlxTween)
+										{
+											arrowL.alpha = 1;
+										}});
+							}});
+					changeSelection(-shiftMult);
+					holdTime = 0;
+				}
+				if (rightP)
+				{
+					if (!ClientPrefs.lowQuality) FlxTween.tween(arrowR, {alpha: 0.4}, 0.1, {
+						ease: FlxEase.quadInOut,
+						onComplete: 
+						function (twn:FlxTween)
+							{
+								FlxTween.tween(arrowR, {alpha: 1}, 0.1, {
+									ease: FlxEase.quadInOut,
+									onComplete: 
+									function (twn:FlxTween)
+										{
+											arrowR.alpha = 1;
+										}});
+							}});
+					changeSelection(shiftMult);
+					holdTime = 0;
+				}
+
+				if(controls.UI_DOWN)
+				{
+					var checkLastHold:Int = Math.floor((holdTime - 0.5) * 10);
+					holdTime += elapsed;
+					var checkNewHold:Int = Math.floor((holdTime - 0.5) * 10);
+
+					if(holdTime > 0.5 && checkNewHold - checkLastHold > 0)
+					{
+						changeSelection((checkNewHold - checkLastHold) * (controls.UI_UP ? -shiftMult : shiftMult));
+						changeDiff();
+					}
+				}
+
+				if(FlxG.mouse.wheel != 0)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
+					changeSelection(-shiftMult * FlxG.mouse.wheel, false);
 					changeDiff();
 				}
 			}
 
-			if(FlxG.mouse.wheel != 0)
+			if (controls.BACK)
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
-				changeSelection(-shiftMult * FlxG.mouse.wheel, false);
-				changeDiff();
+				persistentUpdate = false;
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+				MusicBeatState.switchState(new MainMenuState());
+				FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'));
 			}
-		}
 
-		FlxG.camera.zoom = FlxMath.lerp(1, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
-		threatLerp = FlxMath.lerp(threatLerp, threatPercent, CoolUtil.boundTo(elapsed * 4, 0, 1));
+			if (FlxG.keys.pressed.SHIFT && accepted && canPress)
+			{
+				persistentUpdate = false;
+				var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
+				var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 
-		if (controls.BACK)
-		{
-			persistentUpdate = false;
-			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
-			FlxG.sound.playMusic(Paths.music('freakyMenu_${Main.funnyMenuMusic}'));
-		}
+				PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+				PlayState.isStoryMode = false;
+				PlayState.storyDifficulty = curDifficulty;
+				PlayState.storyWeekName = WeekData.getWeekFileName();
+				PlayState.chartingMode = true;
 
-		if (FlxG.keys.pressed.SHIFT && accepted && canPress)
-		{
-			persistentUpdate = false;
-			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
-			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
+				trace('LOADING CHART EDITOR FOR: ' + PlayState.SONG.song);
+				LoadingState.loadAndSwitchState(new ChartingState());
+				destroyFreeplayVocals();
+			}
 
-			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-			PlayState.storyWeekName = WeekData.getWeekFileName();
-			PlayState.chartingMode = true;
+			if (accepted && canPress)
+			{
+				persistentUpdate = false;
+				var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
+				var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 
-			trace('LOADING CHART EDITOR FOR: ' + PlayState.SONG.song);
-			LoadingState.loadAndSwitchState(new ChartingState());
-			destroyFreeplayVocals();
-		}
+				PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+				PlayState.isStoryMode = false;
+				PlayState.storyDifficulty = curDifficulty;
+				PlayState.storyWeekName = WeekData.getWeekFileName();
 
-		if (accepted && canPress)
-		{
-			persistentUpdate = false;
-			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
-			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
-
-			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-			PlayState.storyWeekName = WeekData.getWeekFileName();
-
-			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
-			
+				trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
+				
             LoadingState.loadAndSwitchState(new PlayState());
 
-			FlxG.sound.music.volume = 0;
-					
-			destroyFreeplayVocals();
-		}
-		else if(controls.RESET)
-		{
-			persistentUpdate = false;
-			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
-			FlxG.sound.play(Paths.sound('scrollMenu'));
-		}
-		else if(ctrl)
-		{
-			persistentUpdate = false;
-			openSubState(new GameplayChangersSubstate());
+				FlxG.sound.music.volume = 0;
+						
+				destroyFreeplayVocals();
+			}
+			else if(controls.RESET)
+			{
+				persistentUpdate = false;
+				openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
+				FlxG.sound.play(Paths.sound('scrollMenu'));
+			}
+			else if(ctrl)
+			{
+				persistentUpdate = true;
+				holdTime = 0;
+				openSubState(new GameplayChangersSubstate());
+			}
 		}
 		super.update(elapsed);
 
-        if (controls.UI_UP_P) {
+        if (subState == null && controls.UI_UP_P) {
             pressed += 1;
             var funnyNum:Int = 20;
             noHeroIntro.alpha += pressed/40;
