@@ -161,6 +161,7 @@ function onStepHit(curStep:Int)
 
         }else if (curStep == 1648)
         {
+            if (ClientPrefs.lowQuality) revealBackground.alpha = 1;
             outside.alpha = 0;
             outside2.alpha = 0;
             coolGradient.alpha = 0;
@@ -204,9 +205,6 @@ function onStepHit(curStep:Int)
             bg.alpha = 1;
         }else if (curStep == 1536)
             dadCamZoom = 0.8;
-        else if (curStep == 1648) {
-            if (ClientPrefs.lowQuality) revealBackground.alpha = 1;
-        }
         else if (curStep == 1664) {
             dadCamZoom = 0.6;
 

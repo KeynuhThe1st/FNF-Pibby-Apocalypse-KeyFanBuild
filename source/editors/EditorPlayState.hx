@@ -112,10 +112,14 @@ class EditorPlayState extends MusicBeatState
 			vocals = new FlxSound();
 
 		generateSong(PlayState.SONG.song);
-		#if (LUA_ALLOWED && MODS_ALLOWED)
+		#if (LUA_ALLOWED && sys)
 		for (notetype in noteTypeMap.keys()) {
-			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
-			if(sys.FileSystem.exists(luaToLoad)) {
+			var luaToLoad:String = Paths.getPreloadPath('custom_notetypes/' + notetype + '.lua');
+			#if MODS_ALLOWED
+			var modScriptPath:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
+			if(sys.FileSystem.exists(modScriptPath) && !sys.FileSystem.isDirectory(modScriptPath)) luaToLoad = modScriptPath;
+			#end
+			if(sys.FileSystem.exists(luaToLoad) && !sys.FileSystem.isDirectory(luaToLoad)) {
 				var lua:editors.EditorLua = new editors.EditorLua(luaToLoad);
 				new FlxTimer().start(0.1, function (tmr:FlxTimer) {
 					lua.stop();

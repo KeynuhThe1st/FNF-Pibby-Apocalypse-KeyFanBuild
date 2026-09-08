@@ -42,6 +42,7 @@ class ScriptManager {
 		expressions.set("FlxBasic", FlxBasic);
 		expressions.set("FlxTimer", FlxTimer);
         expressions.set("ClientPrefs", ClientPrefs);
+        expressions.set("GameOverSubstate", GameOverSubstate);
 		expressions.set("FlxRuntimeShader", FlxRuntimeShader);
 		expressions.set("RuntimeShaders", _Shaders);
 		expressions.set("newShader", function(fragFile:String = null, vertFile:String = null)
@@ -161,6 +162,8 @@ class ScriptManager {
 		});
 
 		expressions.set("Math", Math);
+		expressions.set("Type", Type);
+		expressions.set("StringTools", StringTools);
 		expressions.set("Paths", Paths);
 		expressions.set("Std", Std);
         expressions.set("Paths", Paths);

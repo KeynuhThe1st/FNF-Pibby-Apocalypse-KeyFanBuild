@@ -128,26 +128,6 @@ function onCreate()
 			if (PlayState.curSong == 'Suffering Siblings')
 				setEffectsVisible(true);
 		}
-		if (curStep == 1136)
-		{
-			if (PlayState.curSong == 'Fallen Hero')
-				setEffectsVisible(false);
-		}
-		if (curStep == 1392)
-		{
-			if (PlayState.curSong == 'Fallen Hero')
-				setEffectsVisible(true);
-		}
-		if (curStep == 2463)
-		{
-			if (PlayState.curSong == 'Fallen Hero')
-				setEffectsVisible(false);
-		}
-		if (curStep == 2943)
-		{
-			if (PlayState.curSong == 'Fallen Hero')
-				setEffectsVisible(true);
-		}
 	}
 	
 	function onEvent(event:String, value1:String, value2:String)

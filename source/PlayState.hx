@@ -262,9 +262,6 @@ class PlayState extends MusicBeatState
 	// for no hero
 	var noHeroIntro:FlxSprite;
 
-	// for fallen hero
-	var fallenHeroTitle:FlxSprite;
-
 	private var healthBarBG:AttachedSprite;
 	public var healthBar:FlxBar;
 	public var boyfriendColor : FlxColor;
@@ -286,7 +283,7 @@ class PlayState extends MusicBeatState
 	public var startingSong:Bool = false;
 	private var updateTime:Bool = true;
 	public static var changedDifficulty:Bool = false;
-	public static var chartingMode:Bool = true;
+	public static var chartingMode:Bool = false;
 
 	var glitchShaderIntensity:Float;
     var distortIntensity:Float;
@@ -1233,6 +1230,22 @@ class PlayState extends MusicBeatState
 			#end
 		}
 		#end
+        // Load Haxe note type handlers only when used by this chart.
+        for (notetype in noteTypeMap.keys()) {
+            var scriptPath:String = Paths.getPreloadPath('custom_notetypes/' + notetype + '.hx');
+            #if MODS_ALLOWED
+            var modScriptPath:String = Paths.modFolders('custom_notetypes/' + notetype + '.hx');
+            if (FileSystem.exists(modScriptPath) && !FileSystem.isDirectory(modScriptPath)) scriptPath = modScriptPath;
+            #end
+            if (FileSystem.exists(scriptPath) && !FileSystem.isDirectory(scriptPath)) {
+                var noteScript:ScriptConstructor = new ScriptConstructor('custom_notetypes', notetype, scriptPath);
+                if (noteScript.script != null) {
+                    _scriptMap.set('custom_notetypes/' + notetype, noteScript.script);
+                    allScripts.push(noteScript);
+                    add(noteScript);
+                }
+            }
+        }
         // Load HScript handlers only for custom events used by this chart.
         // Lua handlers above and HScript handlers can coexist for the same event.
         for (event in eventPushedMap.keys()) {
@@ -1333,12 +1346,10 @@ class PlayState extends MusicBeatState
 				largeKey = "maw";
 			case "Retcon":
 				largeKey = "retcon";
-			case "Fallen Hero":
-				largeKey = "fh";
 			case "Suffering Siblings V3":
 				largeKey = "ssv3";
 			default:
-				largeKey = "https://i.imgur.com/j1NOFU9.gif";
+				if (largeKey == "") largeKey = "https://i.imgur.com/j1NOFU9.gif";
 		}
 
 		#if desktop
@@ -1548,26 +1559,6 @@ class PlayState extends MusicBeatState
 					blurFNFZoomEditionHUD.setFloat('focusPower', 2);
 
                     if (ClientPrefs.gore) {
-					    GameOverSubstate.characterName = 'bf-dead-finn';
-						GameOverSubstate.deathSoundName = 'bffinndeath';
-						GameOverSubstate.endSoundName = 'gffinnrevive';
-                    }
-				case 'Fallen Hero':
-					healthDrain = true;
-					timeTxt.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					scoreTxt.setFormat(Paths.font('finn.ttf'), 20, boyfriendColor, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					lyricTxt.setFormat(Paths.font('finn.ttf'), 48, dadColor, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					botplayTxt.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					FlxTween.tween(lyricTxt, {alpha: 1}, 0.5, {
-						ease: FlxEase.linear,
-						onComplete:
-						function (twn:FlxTween)
-							{
-								lyricTxt.alpha = 1;
-							}
-					});
-
-					if (ClientPrefs.gore) {
 					    GameOverSubstate.characterName = 'bf-dead-finn';
 						GameOverSubstate.deathSoundName = 'bffinndeath';
 						GameOverSubstate.endSoundName = 'gffinnrevive';
@@ -4680,6 +4671,17 @@ class PlayState extends MusicBeatState
     // vv in place of FlxTimer because that shid SUCKS!!
     var distortShaderTimes:Array<Float> = [0,0];
 
+    function scriptedOpponentCharacter(note:Note, fallback:Character):Character
+    {
+        var script = getScript('custom_notetypes/' + note.noteType);
+        if (script != null && script.exists('getOpponentCharacter'))
+        {
+            var character:Character = script.get('getOpponentCharacter')(note);
+            if (character != null) return character;
+        }
+        return fallback;
+    }
+
 	function opponentNoteHit(note:Note):Void
 	{
         var glitching = false;
@@ -4798,6 +4800,7 @@ class PlayState extends MusicBeatState
                 distortShaderTimes[idx] = 0; // remove the glitching
         }
 
+			char = scriptedOpponentCharacter(note, char);
 			if(char != null)
 			{
 				char.holdTimer = 0;
@@ -4813,7 +4816,10 @@ class PlayState extends MusicBeatState
 					if (!note.isSustainNote && noteRows[note.mustPress ? 0 : 1][note.row] != null && noteRows[note.mustPress ? 0 : 1][note.row].length > 1)
 					{
 						// potentially have jump anims?
-						var chord = noteRows[note.mustPress ? 0 : 1][note.row];
+						var chord = noteRows[note.mustPress ? 0 : 1][note.row].filter(function(chordNote:Note) {
+                            return scriptedOpponentCharacter(chordNote, dad) == scriptedOpponentCharacter(note, dad);
+                        });
+						if (chord.length == 0) chord = [note];
 						var animNote = chord[0];
 						var realAnim = singAnimations[Std.int(Math.abs(animNote.noteData))] + altAnim;
 						if (char.mostRecentRow != note.row)
@@ -5145,6 +5151,12 @@ class PlayState extends MusicBeatState
 	var lastStepHit:Int = -1;
 	override function stepHit()
 	{
+		if(curStep == lastStepHit) {
+			return;
+		}
+
+		lastStepHit = curStep;
+
 		var blackFNF:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		blackFNF.scrollFactor.set();
 		blackFNF.alpha = 0;
@@ -5181,250 +5193,6 @@ class PlayState extends MusicBeatState
 							if (ClientPrefs.flashing) {
 								camOther.flash(FlxColor.WHITE, 1);
 							}
-					}
-				case 'Fallen Hero':
-					switch (curStep)
-					{
-						case 0:
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
-						case 64:
-							//cinematic bars
-							triggerEventNote('Cinematics', 'on', '1');
-						case 128: 
-							var fallenHeroText:FlxText = new FlxText(0, 0, FlxG.width, "Fallen Hero", 64);
-							fallenHeroText.setFormat(Paths.font('finn.ttf'), 64, FlxColor.WHITE, CENTER);
-							fallenHeroText.screenCenter(XY);
-							fallenHeroText.cameras = [camOther];
-							fallenHeroText.alpha = 0;
-							add(fallenHeroText);
-							FlxTween.tween(fallenHeroText, {alpha: 1}, 0.5);
-
-							var authorText:FlxText = new FlxText(0, fallenHeroText.y + 80, FlxG.width, "By IAmDaDogeOfDaFuture", 32);
-							authorText.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER);
-							authorText.screenCenter(X);
-							authorText.cameras = [camOther];
-							authorText.alpha = 0;
-							add(authorText);
-							FlxTween.tween(authorText, {alpha: 1}, 0.5);
-
-							new FlxTimer().start(1.5, function(tmr:FlxTimer){
-								FlxTween.tween(fallenHeroText, {alpha: 0}, 2, {onComplete: function(twn:FlxTween) { fallenHeroText.destroy(); }});
-								FlxTween.tween(authorText, {alpha: 0}, 2, {onComplete: function(twn:FlxTween) { authorText.destroy(); }});
-							});
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
-						case 192: lyricTxt.text = "HAHAHAHAHAHAHA";
-							triggerEventNote('Cinematics', 'off', '1');
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
-							triggerEventNote('Apple Filter', 'on', 'black');
-						case 200: lyricTxt.text = "*inhales*";
-						case 203: lyricTxt.text = "HAHAHAHAHAHAHA";
-						case 214: lyricTxt.text = "*inhales*";
-						case 220: lyricTxt.text = "HAHAHAHAHAHAHA";
-						case 228: lyricTxt.text = "*inhales*";
-						case 232: lyricTxt.text = "WHY!!!!!";
-						case 240: lyricTxt.text = "WHY!?!?!?!?!?";
-						case 244: lyricTxt.text = "JUST WHY!?!?!?!?";
-						case 255: lyricTxt.text = "WHY!?!?!?!?!?";
-						case 262: lyricTxt.text = "WHY DO YOU KEEP REJECTING THE DARKNESS!?";
-						case 295: lyricTxt.text = "LET IT SPREAD BOYFRIEND...";
-						case 324: lyricTxt.text = "LET IT...";
-						case 330: lyricTxt.text = "SPREAAAAAAAAAD";
-						case 355: lyricTxt.text = " ";
-						case 432: lyricTxt.text = "DIEEEEEEEEEEEEEE!!!!!";
-							triggerEventNote('Apple Filter', 'off', '');
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
-						case 448:
-							lyricTxt.text = "";
-						case 703:
-							triggerEventNote('Change Scroll Speed', '0.1', '0.25');
-						case 704:
-							lyricTxt.text = "WHY!?!?!?!?!?";
-						case 711:
-							triggerEventNote('Change Scroll Speed', '1', '0.25');
-							lyricTxt.text = " ";
-						case 1088:
-							FlxTween.tween(camGame, {alpha: 0}, 0.8, {ease: FlxEase.quadInOut});
-							FlxTween.tween(camHUD, {alpha: 0}, 0.8, {ease: FlxEase.quadInOut});
-						case 1100: lyricTxt.text = "Just...";
-						case 1107: lyricTxt.text = "Let the darkness CONSUME YOU ALREADY!!!";
-						case 1136:
-							lyricTxt.text = "";
-							theBlackness.alpha = 1;
-							if (ClientPrefs.flashing) camGame.flash(FlxColor.WHITE, 1);
-							addCharacterToList('fhfinn-white', 1);
-							triggerEventNote('Change Character', '1', 'fhfinn-white');
-							camHUD.alpha = 1;
-							camGame.alpha = 1;
-							addCharacterToList('fhbf-white', 0);
-							triggerEventNote('Change Character', '0', 'fhbf-white');
-							if(gf != null) gf.visible = false;
-						case 1392:
-							theBlackness.alpha = 0;
-							triggerEventNote('Change Character', '1', 'finn-sword');
-							triggerEventNote('Change Character', '0', 'newbf');
-							if(gf != null) gf.visible = true;
-						case 1660: lyricTxt.text = "The darkness...";
-						case 1672: lyricTxt.text = "It is calling to me...";
-						case 1694: lyricTxt.text = "To be...";
-						case 1705:
-							lyricTxt.text = "HAPPY...";
-							lyricTxt.color = FlxColor.RED;
-						case 1722:
-							lyricTxt.text = "HAHAHAHAHAHAHAHA";
-							lyricTxt.color = dadColor;
-						case 1741: lyricTxt.text = "TO SHOW TRUE";
-						case 1756:
-							lyricTxt.text = "HAPPINESS!";
-							lyricTxt.color = FlxColor.RED;
-							new FlxTimer().start(1, function(tmr:FlxTimer){
-								lyricTxt.color = dadColor;});
-						case 1768:
-							lyricTxt.text = " ";
-						case 1904:
-							opponentStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 0;
-							});
-							playerStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 0;
-							});
-							lyricTxt.color = dadColor;
-							camGame.alpha = 0;
-							
-							iconP1.alpha = 0;
-							iconP2.alpha = 0;
-							if (gf != null) iconP3.alpha = 0;
-							healthBar.alpha = 0;
-							healthBarBG.alpha = 0;
-							pibbyHealthbar.alpha = 0;
-							finnBarThing.alpha = 0;
-							scoreTxt.alpha = 0;
-							timeTxt.alpha = 0;
-							timeBar.alpha = 0;
-							timeBarBG.alpha = 0;
-
-							FlxTween.tween(camGame, {alpha: 1}, 2);
-							dad.visible = false;
-							boyfriend.visible = false;
-							triggerEventNote('Apple Filter', 'on', 'black');
-						case 1911:
-							playerStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 0;
-								FlxTween.tween(strum, {alpha: 1}, 1);
-							});
-						case 1920:
-							opponentStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 1;
-							});
-							camGame.alpha = 1;
-
-							iconP1.alpha = 1;
-							iconP2.alpha = 1;
-							if (gf != null) iconP3.alpha = 1;
-							healthBar.alpha = ClientPrefs.healthBarAlpha;
-							healthBarBG.alpha = ClientPrefs.healthBarAlpha;
-							pibbyHealthbar.alpha = 1;
-							finnBarThing.alpha = ClientPrefs.healthBarAlpha;
-							scoreTxt.alpha = 1;
-							timeTxt.alpha = 1;
-							timeBar.alpha = 1;
-							timeBarBG.alpha = 1;
-
-							dad.visible = true;
-							boyfriend.visible = true;
-							triggerEventNote('Apple Filter', 'off', '');
-						case 2431:
-							FlxTween.tween(camGame, {alpha: 0}, 1);
-							FlxTween.tween(iconP1, {alpha: 0}, 1);
-							FlxTween.tween(iconP2, {alpha: 0}, 1);
-							if (gf != null) FlxTween.tween(iconP3, {alpha: 0}, 1);
-							FlxTween.tween(pibbyHealthbar, {alpha: 0}, 1);
-							FlxTween.tween(finnBarThing, {alpha: 0}, 1);
-							FlxTween.tween(scoreTxt, {alpha: 0}, 1);
-							playerStrums.forEach(function(strum:StrumNote) {
-								FlxTween.tween(strum, {alpha: 0}, 1);
-							});
-							opponentStrums.forEach(function(strum:StrumNote) {
-								FlxTween.tween(strum, {alpha: 0}, 1);
-							});
-							FlxTween.tween(timeBar, {alpha: 0}, 1);
-							FlxTween.tween(timeBarBG, {alpha: 0}, 1);
-							FlxTween.tween(timeTxt, {alpha: 0}, 1);
-							FlxTween.tween(theBlackness, {alpha: 1}, 1);
-						case 2447:
-							dad.visible = false;
-							if(gf != null) gf.visible = false;
-						case 2543:
-							playerStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 0;
-								FlxTween.tween(strum, {alpha: 1}, 1);
-							});
-							FlxTween.tween(camGame, {alpha: 1}, 1);
-						case 2687:
-							if(gf != null) {
-								gf.alpha = 0;
-								gf.visible = true;
-								FlxTween.tween(gf, {alpha: 1}, 2);
-							}
-							opponentStrums.forEach(function(strum:StrumNote) {
-								strum.alpha = 0;
-								FlxTween.tween(strum, {alpha: 1}, 20);
-							});
-						case 2943:
-							theBlackness.alpha = 0;
-							dad.visible = true;
-							iconP1.alpha = 1;
-							iconP2.alpha = 1;
-							if (gf != null) iconP3.alpha = 1;
-							pibbyHealthbar.alpha = 1;
-							finnBarThing.alpha = ClientPrefs.healthBarAlpha;
-							scoreTxt.alpha = 1;
-						case 3173: lyricTxt.text = "There's no one to save you";
-						case 3196:
-							lyricTxt.text = "NOW...";
-							lyricTxt.color = FlxColor.RED;
-							new FlxTimer().start(1, function(tmr:FlxTimer) {
-								lyricTxt.color = dadColor;});
-						case 3199:
-							lyricTxt.text = " ";
-						case 4015:
-						    playerStrums.forEach(function(strum:StrumNote) {
-								FlxTween.tween(strum, {alpha: 0}, 1);
-							});
-							opponentStrums.forEach(function(strum:StrumNote) {
-								FlxTween.tween(strum, {alpha: 0}, 1);
-							});
-							lyricTxt.color = dadColor;
-							FlxTween.tween(camGame, {alpha: 0}, 1);
-							FlxTween.tween(iconP1, {alpha: 0}, 1);
-							FlxTween.tween(iconP2, {alpha: 0}, 1);
-							if (gf != null) FlxTween.tween(iconP3, {alpha: 0}, 1);
-							FlxTween.tween(pibbyHealthbar, {alpha: 0}, 1);
-							FlxTween.tween(finnBarThing, {alpha: 0}, 1);
-							FlxTween.tween(scoreTxt, {alpha: 0}, 1);
-							FlxTween.tween(timeBar, {alpha: 0}, 1);
-							FlxTween.tween(timeBarBG, {alpha: 0}, 1);
-							FlxTween.tween(timeTxt, {alpha: 0}, 1);
-						case 4366:
-							var fallenHeroText:FlxText = new FlxText(0, 0, FlxG.width, "Fallen Hero", 64);
-							fallenHeroText.setFormat(Paths.font('finn.ttf'), 64, FlxColor.WHITE, CENTER);
-							fallenHeroText.screenCenter(XY);
-							fallenHeroText.cameras = [camOther];
-							fallenHeroText.alpha = 0;
-							add(fallenHeroText);
-							FlxTween.tween(fallenHeroText, {alpha: 1}, 0.5);
-
-							var authorText:FlxText = new FlxText(0, fallenHeroText.y + 80, FlxG.width, "By IAmDaDogeOfDaFuture", 32);
-							authorText.setFormat(Paths.font('finn.ttf'), 32, FlxColor.WHITE, CENTER);
-							authorText.screenCenter(X); // This was already correct, but for consistency with the fix above.
-							authorText.cameras = [camOther];
-							authorText.alpha = 0;
-							add(authorText);
-							FlxTween.tween(authorText, {alpha: 1}, 0.5);
-
-							new FlxTimer().start(1.5, function(tmr:FlxTimer){
-								FlxTween.tween(fallenHeroText, {alpha: 0}, 2, {onComplete: function(twn:FlxTween) { fallenHeroText.destroy(); }});
-								FlxTween.tween(authorText, {alpha: 0}, 2, {onComplete: function(twn:FlxTween) { authorText.destroy(); }});
-							});
 					}
 				case 'Come Along With Me':
 					switch (curStep)
@@ -7703,11 +7471,6 @@ class PlayState extends MusicBeatState
 			}
 
 
-		if(curStep == lastStepHit) {
-			return;
-		}
-
-		lastStepHit = curStep;
 		setOnLuas('curStep', curStep);
 		callOnLuas('onStepHit', []);
 
@@ -8396,12 +8159,13 @@ class PlayState extends MusicBeatState
 
 	function killyourselfCheck():Bool
 	{
+        var events = getScript("events");
+        if (events != null && events.exists("killyourselfCheck"))
+            return events.get("killyourselfCheck")();
 		switch (SONG.song)
 		{
 			case 'Mindless' | 'Blessed by Swords' | 'Brotherly Love' | 'Suffering Siblings' | 'Suffering Siblings V3' | "Child's Play" | 'My Amazing World' | 'Retcon' | 'Forgotten World' | 'Come Along With Me':
 				return true;
-			case 'Fallen Hero':
-				return curStep >= 448;
 		}
 		return false;
 	}

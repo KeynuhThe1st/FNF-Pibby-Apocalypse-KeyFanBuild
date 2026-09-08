@@ -930,8 +930,8 @@ class ChartingState extends MusicBeatState
 			key++;
 		}
 
-		#if LUA_ALLOWED
-		var directories:Array<String> = [];
+		#if sys
+		var directories:Array<String> = [Paths.getPreloadPath('custom_notetypes/')];
 
 		#if MODS_ALLOWED
 		directories.push(Paths.mods('custom_notetypes/'));
@@ -945,8 +945,8 @@ class ChartingState extends MusicBeatState
 			if(FileSystem.exists(directory)) {
 				for (file in FileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith('.lua')) {
-						var fileToCheck:String = file.substr(0, file.length - 4);
+					if (!FileSystem.isDirectory(path) && (file.endsWith('.hx') #if LUA_ALLOWED || file.endsWith('.lua') #end)) {
+						var fileToCheck:String = haxe.io.Path.withoutExtension(file);
 						if(!noteTypeMap.exists(fileToCheck)) {
 							displayNameList.push(fileToCheck);
 							noteTypeMap.set(fileToCheck, key);
@@ -1670,6 +1670,7 @@ class ChartingState extends MusicBeatState
 
 				//if(_song.stage == null) _song.stage = stageDropDown.selectedLabel;
 				StageData.loadDirectory(_song);
+				PlayState.chartingMode = true;
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 

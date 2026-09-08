@@ -244,12 +244,6 @@ function onSongStart()
     angleSpeed = angleValue = 1;
 }
 
-function onStepHit(curStep) {
-    if (glitch != null) {
-        glitch.animation.play('spin');
-    }
-}
-
 function tweenLoopAngle(varx, distance1, distance2, duration1, duration2) {
     FlxTween.tween(varx, {angle: distance1 * angleValue}, duration1 / angleSpeed, {
         ease: FlxEase.sineInOut,
@@ -284,8 +278,11 @@ function makeShitInsane(object, xThing, timerRandom1, timerRandom2)
     });
 }
 
-function onStepHit(curStep)
+function onStepHit(curStep:Int)
 {
+    if (glitch != null)
+        glitch.animation.play('spin');
+
     if (curStep == 513)
     {
         tweenLoopAngle(PlayState.boyfriend, -2.1, 2.1, 2.5, 2.5);

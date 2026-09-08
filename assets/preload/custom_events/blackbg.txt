@@ -1,0 +1,4 @@
+Makes the background completely black behind the characters. Characters and HUD remain visible.
+
+Value 1: true (or blank) = black background; false = restore the background.
+Value 2: Unused. The change is instant.

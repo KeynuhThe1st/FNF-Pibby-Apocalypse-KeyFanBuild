@@ -1,0 +1,4 @@
+Moves BF's strums between the middle and the normal right-side position.
+
+Value 1: true = move to middle; false = move back to normal.
+Value 2: Duration in seconds. Leave blank (or use 0) to move instantly.

@@ -1,0 +1,10 @@
+Value 1: on / off (starts off).
+Value 2: Change Character - enter the ghost's character ID (character JSON filename without .json).
+
+on: Show a translucent second opponent using the character selected in Value 2. Opponent notes using Second Dad Sing animate the ghost; normal notes animate the primary Dad.
+off: Hide the duplicate. Second Dad Sing notes return to the primary Dad.
+
+Blank Value 2 keeps the previous ghost character. If none was selected, the first activation uses the current Dad. Blank Value 1 changes the selected character without toggling the mode. The primary Dad's character is unaffected.
+
+Place Second Dad Sing notes on the opponent side. Holds and alternate animations are supported. The ghost follows Dad's position, with its own character placement, scale, and animations.
+Adjust ghostAlpha, ghostOffsetX and ghostOffsetY in Second Dad Mode.hx to customize its appearance.

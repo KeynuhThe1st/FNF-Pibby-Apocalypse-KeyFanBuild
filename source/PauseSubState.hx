@@ -48,12 +48,13 @@ class PauseSubState extends MusicBeatSubstate
 		
 		menuItems = menuItemsOG;
 
-		#if CAN_CHEAT
-		//menuItems.push('Skip Time');
-		//menuItems.push('Toggle Botplay');
-		//menuItems.push('Leave Charting Mode');
-		//menuItems.push('Toggle Practice Mode');
-		#end
+		menuItems.push('Toggle Botplay');
+		if (PlayState.chartingMode)
+		{
+			menuItems.push('Skip Time');
+			menuItems.push('Leave Charting Mode');
+			menuItems.push('Toggle Practice Mode');
+		}
 
 		for (i in 0...CoolUtil.difficulties.length) {
 			var diff:String = '' + CoolUtil.difficulties[i];
@@ -145,6 +146,25 @@ class PauseSubState extends MusicBeatSubstate
 		var upP = controls.UI_UP_P;
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
+
+		if (menuItems[curSelected] == 'Skip Time')
+		{
+			var direction:Int = (controls.UI_RIGHT ? 1 : 0) - (controls.UI_LEFT ? 1 : 0);
+			if (controls.UI_LEFT_P || controls.UI_RIGHT_P)
+			{
+				curTime += (controls.UI_RIGHT_P ? 1000 : -1000);
+				holdTime = 0;
+			}
+			if (direction != 0)
+			{
+				holdTime += elapsed;
+				if (holdTime > 0.5) curTime += 45000 * elapsed * direction;
+			}
+			else holdTime = 0;
+			curTime = Math.max(0, Math.min(FlxG.sound.music.length, curTime));
+			updateSkipTimeText();
+		}
+		else holdTime = 0;
 
 		if (FlxG.mouse.wheel != 0)
 		{
@@ -273,8 +293,8 @@ class PauseSubState extends MusicBeatSubstate
 			case "Restart Song":
 				restartSong();
 			case "Leave Charting Mode":
-				restartSong();
 				PlayState.chartingMode = false;
+				restartSong();
 			case 'Skip Time':
 				if(curTime < Conductor.songPosition)
 				{

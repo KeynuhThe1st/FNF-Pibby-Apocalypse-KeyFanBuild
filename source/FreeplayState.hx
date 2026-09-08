@@ -1,3 +1,7 @@
+// I bet PA devs find it funny just to add animations to the Freeplay image preview along with the arrows LOL
+// also RIP the camera beats that were used to be in the demo
+// No Git, i don't want your shitty sentence auto recommendation
+
 package;
 
 import flixel.util.FlxTimer;

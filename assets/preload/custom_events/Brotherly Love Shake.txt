@@ -1,0 +1,3 @@
+Value 1: true = turned on, false = turned off.
+Value 2: unused.
+goofy ahh shake thing that is used in Brotherly Love lol
